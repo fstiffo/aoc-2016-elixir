@@ -29,5 +29,67 @@ defmodule Aoc.Day01 do
   end
 
   def solve2(input) do
+    {path, _} =
+      String.split(input, ", ", trim: true)
+      ~> Enum.map_reduce(_, {{0, 0}, :north}, fn e, acc ->
+        # This time we preserve the streches of path from starting location to
+        # the ending one, in order to find the first location where our path
+        # intersects itself at first (eg. the first location visited twice).
+
+        turn = String.first(e)
+        blocks = String.to_integer(String.slice(e, 1..10))
+
+        case {turn, acc} do
+          {"R", {{x, y}, :north}} ->
+            strech = for x <- (x + 1)..(x + blocks), do: {x, y}
+            {strech, {List.last(strech), :east}}
+
+          {"R", {{x, y}, :east}} ->
+            strech = for y <- (y - 1)..(y - blocks), do: {x, y}
+            {strech, {List.last(strech), :south}}
+
+          {"R", {{x, y}, :south}} ->
+            strech = for x <- (x - 1)..(x - blocks), do: {x, y}
+            {strech, {List.last(strech), :west}}
+
+          {"R", {{x, y}, :west}} ->
+            strech = for y <- (y + 1)..(y + blocks), do: {x, y}
+            {strech, {List.last(strech), :north}}
+
+          {"L", {{x, y}, :north}} ->
+            strech = for x <- (x - 1)..(x - blocks), do: {x, y}
+            {strech, {List.last(strech), :west}}
+
+          {"L", {{x, y}, :west}} ->
+            strech = for y <- (y - 1)..(y - blocks), do: {x, y}
+            {strech, {List.last(strech), :south}}
+
+          {"L", {{x, y}, :south}} ->
+            strech = for x <- (x + 1)..(x + blocks), do: {x, y}
+            {strech, {List.last(strech), :east}}
+
+          {"L", {{x, y}, :east}} ->
+            strech = for y <- (y + 1)..(y + blocks), do: {x, y}
+            {strech, {List.last(strech), :north}}
+
+          _ ->
+            {acc, acc}
+        end
+      end)
+
+    path
+    |> List.flatten()
+    ~> fst_visited_twice([], _)
+    |> (fn {x, y} -> abs(x) + abs(y) end).()
+  end
+
+  defp fst_visited_twice(_, []), do: nil
+
+  defp fst_visited_twice(visited, [pos | to_visit]) do
+    if Enum.member?(visited, pos) do
+      pos
+    else
+      fst_visited_twice([pos | visited], to_visit)
+    end
   end
 end
