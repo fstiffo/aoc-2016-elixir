@@ -2,14 +2,13 @@ defmodule Aoc.Day01 do
   @moduledoc false
 
   import Aoc.Utils
-  import PipeTo
 
   def run(1), do: solve1(get_input(1))
   def run(2), do: solve2(get_input(1))
 
   def solve1(input) do
     String.split(input, ", ", trim: true)
-    ~> Enum.reduce(_, {{0, 0}, :north}, fn e, acc ->
+    |> Enum.reduce({{0, 0}, :north}, fn e, acc ->
       turn = String.first(e)
       blocks = String.to_integer(String.slice(e, 1..10))
 
@@ -31,10 +30,10 @@ defmodule Aoc.Day01 do
   def solve2(input) do
     {path, _} =
       String.split(input, ", ", trim: true)
-      ~> Enum.map_reduce(_, {{0, 0}, :north}, fn e, acc ->
+      |> Enum.map_reduce({{0, 0}, :north}, fn e, acc ->
         # This time we preserve the streches of path from starting location to
-        # the ending one, in order to find the first location where our path
-        # intersects itself at first (eg. the first location visited twice).
+        # the ending one, in order to find where our path intersects itself
+        # at first (eg. the first location visited twice).
 
         turn = String.first(e)
         blocks = String.to_integer(String.slice(e, 1..10))
@@ -79,17 +78,17 @@ defmodule Aoc.Day01 do
 
     path
     |> List.flatten()
-    ~> fst_visited_twice([], _)
+    |> fst_visited_twice([])
     |> (fn {x, y} -> abs(x) + abs(y) end).()
   end
 
-  defp fst_visited_twice(_, []), do: nil
+  defp fst_visited_twice([], _), do: nil
 
-  defp fst_visited_twice(visited, [pos | to_visit]) do
+  defp fst_visited_twice([pos | to_visit], visited) do
     if Enum.member?(visited, pos) do
       pos
     else
-      fst_visited_twice([pos | visited], to_visit)
+      fst_visited_twice(to_visit, [pos | visited])
     end
   end
 end
