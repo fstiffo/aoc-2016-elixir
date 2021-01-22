@@ -3,9 +3,11 @@ defmodule Aoc.Day01 do
 
   import Aoc.Utils
 
+  @spec run(1 | 2) :: number
   def run(1), do: solve1(get_input(1))
   def run(2), do: solve2(get_input(1))
 
+  @spec solve1(binary) :: number
   def solve1(input) do
     String.split(input, ", ", trim: true)
     |> Enum.reduce({{0, 0}, :north}, fn e, acc ->
@@ -27,6 +29,7 @@ defmodule Aoc.Day01 do
     |> (fn {{x, y}, _} -> abs(x) + abs(y) end).()
   end
 
+  @spec solve2(binary) :: number
   def solve2(input) do
     {path, _} =
       String.split(input, ", ", trim: true)
