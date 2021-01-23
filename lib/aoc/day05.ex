@@ -11,6 +11,7 @@ defmodule Aoc.Day05 do
   end
 
   def solve2(input) do
+    password2(input)
   end
 
   # :crypto.hash(:md5 , "abc3231929") |> Base.encode16()
@@ -28,6 +29,30 @@ defmodule Aoc.Day05 do
       password1(door_id, l ++ [String.at(hash, 5)], acc + 1)
     else
       password1(door_id, l, acc + 1)
+    end
+  end
+
+  def password2(door_id) do
+    password2(door_id, List.duplicate(nil, 8), 0)
+  end
+
+  def password2(door_id, l, acc) do
+    if not Enum.any?(l, &is_nil/1) do
+      List.to_string(l)
+    else
+      hash = :crypto.hash(:md5, door_id <> Integer.to_string(acc)) |> Base.encode16()
+
+      if String.slice(hash, 0..4) == "00000" do
+        index = String.at(hash, 5) |> String.to_integer(16)
+
+        if index < 8 && is_nil(Enum.at(l, index)) do
+          password2(door_id, List.replace_at(l, index, String.at(hash, 6)), acc + 1)
+        else
+          password2(door_id, l, acc + 1)
+        end
+      else
+        password2(door_id, l, acc + 1)
+      end
     end
   end
 end
