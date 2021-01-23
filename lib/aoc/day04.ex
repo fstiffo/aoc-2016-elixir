@@ -16,7 +16,11 @@ defmodule Aoc.Day04 do
   end
 
   def solve2(input) do
-    0
+    String.split(input, "\n")
+    |> Enum.map(&parse_room/1)
+    |> Enum.filter(fn r -> real_room?(r) end)
+    |> Enum.map(&decrypt/1)
+    |> Enum.filter(fn [decrypted: d, sector_id: _] -> String.contains?(d, "north") end)
   end
 
   def parse_room(t) do
@@ -26,14 +30,25 @@ defmodule Aoc.Day04 do
     [encrypted_name: e, sector_id: s, checksum: c]
   end
 
-  def real_room?(room) do
-    room[:encrypted_name]
+  def real_room?(encrypted_name: e, sector_id: _, checksum: c) do
+    e
     |> String.replace("-", "")
     |> String.to_charlist()
     |> Enum.reduce(Map.new(), fn e, acc -> Map.update(acc, e, 1, &(&1 + 1)) end)
     |> Enum.sort_by(fn {k, v} -> v * 1000 + ?z - k end, :desc)
     |> Enum.take(5)
     |> Enum.map(fn {k, _v} -> k end)
-    |> List.to_string() == room[:checksum]
+    |> List.to_string() == c
+  end
+
+  def decrypt(encrypted_name: e, sector_id: s, checksum: _) do
+    d =
+      e
+      |> String.replace("-", " ")
+      |> String.to_charlist()
+      |> Enum.map(fn c -> if c == ?\s, do: ?\s, else: ?a + rem(c - ?a + s, 26) end)
+      |> List.to_string()
+
+    [decrypted: d, sector_id: s]
   end
 end
