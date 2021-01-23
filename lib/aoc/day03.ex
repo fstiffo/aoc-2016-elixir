@@ -10,7 +10,9 @@ defmodule Aoc.Day03 do
   @spec solve1(binary) :: non_neg_integer
   def solve1(input) do
     String.split(input, "\n")
-    |> Enum.map(fn x -> x |> String.split() |> Enum.map(&String.to_integer/1) |> valid end)
+    |> Enum.map(fn x ->
+      x |> String.split() |> Enum.map(&String.to_integer/1) |> valid_triangle?
+    end)
     |> Enum.filter(& &1)
     |> length
   end
@@ -21,12 +23,12 @@ defmodule Aoc.Day03 do
       x |> String.split() |> Enum.map(&String.to_integer/1)
     end)
     |> vertically([])
-    |> Enum.map(&valid/1)
+    |> Enum.map(&valid_triangle?/1)
     |> Enum.filter(& &1)
     |> length
   end
 
-  defp valid([a, b, c]) do
+  defp valid_triangle?([a, b, c]) do
     # In a valid triangle, the sum of any two sides must be larger than the remaining side.
 
     a + b > c and a + c > b and b + c > a
