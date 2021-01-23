@@ -7,6 +7,7 @@ defmodule Aoc.Day04 do
   def run(1), do: solve1(get_input(4))
   def run(2), do: solve2(get_input(4))
 
+  @spec solve1(binary) :: number
   def solve1(input) do
     String.split(input, "\n")
     |> Enum.map(&parse_room/1)
@@ -15,6 +16,7 @@ defmodule Aoc.Day04 do
     |> Enum.sum()
   end
 
+  @spec solve2(binary) :: [any]
   def solve2(input) do
     String.split(input, "\n")
     |> Enum.map(&parse_room/1)
@@ -23,14 +25,14 @@ defmodule Aoc.Day04 do
     |> Enum.filter(fn [decrypted: d, sector_id: _] -> String.contains?(d, "north") end)
   end
 
-  def parse_room(t) do
+  defp parse_room(t) do
     e = String.slice(t, 0..-12)
     s = String.slice(t, -10..-8) |> String.to_integer()
     c = String.slice(t, -6..-2)
     [encrypted_name: e, sector_id: s, checksum: c]
   end
 
-  def real_room?(encrypted_name: e, sector_id: _, checksum: c) do
+  defp real_room?(encrypted_name: e, sector_id: _, checksum: c) do
     e
     |> String.replace("-", "")
     |> String.to_charlist()
@@ -41,7 +43,7 @@ defmodule Aoc.Day04 do
     |> List.to_string() == c
   end
 
-  def decrypt(encrypted_name: e, sector_id: s, checksum: _) do
+  defp decrypt(encrypted_name: e, sector_id: s, checksum: _) do
     d =
       e
       |> String.replace("-", " ")
