@@ -16,13 +16,13 @@ defmodule Aoc.Day05 do
 
   # :crypto.hash(:md5 , "abc3231929") |> Base.encode16()
 
-  def password1(door_id) do
+  defp password1(door_id) do
     password1(door_id, [], 0)
   end
 
-  def password1(_, l, _) when length(l) == 8, do: List.to_string(l)
+  defp password1(_, l, _) when length(l) == 8, do: List.to_string(l)
 
-  def password1(door_id, l, acc) do
+  defp password1(door_id, l, acc) do
     hash = :crypto.hash(:md5, door_id <> Integer.to_string(acc)) |> Base.encode16()
 
     if String.slice(hash, 0..4) == "00000" do
@@ -32,11 +32,11 @@ defmodule Aoc.Day05 do
     end
   end
 
-  def password2(door_id) do
+  defp password2(door_id) do
     password2(door_id, List.duplicate(nil, 8), 0)
   end
 
-  def password2(door_id, l, acc) do
+  defp password2(door_id, l, acc) do
     if not Enum.any?(l, &is_nil/1) do
       List.to_string(l)
     else
