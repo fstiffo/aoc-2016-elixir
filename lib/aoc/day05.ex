@@ -25,9 +25,9 @@ defmodule Aoc.Day05 do
     hash = :crypto.hash(:md5, door_id <> Integer.to_string(acc)) |> Base.encode16()
 
     if String.slice(hash, 0..4) == "00000" do
-      password(door_id, l ++ [String.at(hash, 5)], acc + 1)
+      password1(door_id, l ++ [String.at(hash, 5)], acc + 1)
     else
-      password(door_id, l, acc + 1)
+      password1(door_id, l, acc + 1)
     end
   end
 end
