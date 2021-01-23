@@ -14,8 +14,6 @@ defmodule Aoc.Day05 do
     password2(input)
   end
 
-  # :crypto.hash(:md5 , "abc3231929") |> Base.encode16()
-
   defp password1(door_id) do
     password1(door_id, [], 0)
   end
