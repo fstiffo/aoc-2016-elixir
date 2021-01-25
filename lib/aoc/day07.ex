@@ -17,9 +17,10 @@ defmodule Aoc.Day07 do
     |> length()
   end
 
-  def all_aba(t), do: all_aba([], t)
+  def all_ab(t), do: all_ab([], t)
 
-  def all_aba(l, t) do
+  def all_ab(l, t) do
+    # Extract all AB of an ABA sequence, present in the string t
     aba = ~r/([^\s])(?!\1)([^\s])\1/
     # A regex that matches an ABA sequence
     capture = Regex.run(aba, t, capture: :first, return: :index)
@@ -30,7 +31,7 @@ defmodule Aoc.Day07 do
       [{start, _}] = capture
       ab = [String.at(t, start), String.at(t, start + 1)]
       {_, rest} = String.split_at(t, start + 1)
-      all_aba([ab | l], rest)
+      all_ab([ab | l], rest)
     end
   end
 
@@ -41,7 +42,7 @@ defmodule Aoc.Day07 do
       Regex.scan(hypernet_seq, t)
       |> List.flatten()
 
-    all_aba(String.replace(t, hypernet_seq, " "))
+    all_ab(String.replace(t, hypernet_seq, " "))
     |> Enum.map(fn [a, b] ->
       {_, bab} = Regex.compile(b <> a <> b)
       # A regex that matches a BAB sequence
